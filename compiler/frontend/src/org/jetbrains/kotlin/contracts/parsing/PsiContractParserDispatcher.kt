@@ -47,10 +47,14 @@ interface PsiContractVariableParserDispatcher {
     fun parseKind(expression: KtExpression?): InvocationKind?
 }
 
-internal class PsiContractParserDispatcher(
+interface ExtensionParserDispatcher {
+    fun parseEffects(expression: KtExpression): Collection<EffectDeclaration>
+}
+
+class PsiContractParserDispatcher(
     private val collector: ContractParsingDiagnosticsCollector,
     private val callContext: ContractCallContext
-) {
+) : PsiContractVariableParserDispatcher {
     private val conditionParser = PsiConditionParser(collector, callContext, this)
     private val constantParser = PsiConstantParser(callContext)
     private val effectsParsers: Map<Name, PsiEffectParser> = mapOf(
@@ -116,7 +120,7 @@ internal class PsiContractParserDispatcher(
         return expression.accept(constantParser, Unit)
     }
 
-    fun parseVariable(expression: KtExpression?): VariableReference? {
+    override fun parseVariable(expression: KtExpression?): VariableReference? {
         if (expression == null) return null
         val descriptor = expression.getResolvedCall(callContext.bindingContext)?.resultingDescriptor ?: return null
         if (descriptor !is ParameterDescriptor) {
@@ -135,7 +139,7 @@ internal class PsiContractParserDispatcher(
             VariableReference(descriptor)
     }
 
-    fun parseReceiver(expression: KtExpression?): ReceiverReference? {
+    override fun parseReceiver(expression: KtExpression?): ReceiverReference? {
         if (expression == null) return null
         val resolvedCall = expression.getResolvedCall(callContext.bindingContext) ?: return null
         val descriptor = resolvedCall.resultingDescriptor
@@ -148,7 +152,7 @@ internal class PsiContractParserDispatcher(
         return ReceiverReference(variable)
     }
 
-    fun parseFunction(expression: KtExpression?): FunctionReference? {
+    override fun parseFunction(expression: KtExpression?): FunctionReference? {
         if (expression == null) return null
         val reference = expression as? KtCallableReferenceExpression ?: return null
         val descriptor =
@@ -163,7 +167,7 @@ internal class PsiContractParserDispatcher(
         return parseConstant(expression)
     }
 
-    fun parseKind(expression: KtExpression?): InvocationKind? {
+    override fun parseKind(expression: KtExpression?): InvocationKind? {
         if (expression == null) return null
         val descriptor = expression.getResolvedCall(callContext.bindingContext)?.resultingDescriptor ?: return null
         if (!descriptor.parents.first().isInvocationKindEnum()) return null
