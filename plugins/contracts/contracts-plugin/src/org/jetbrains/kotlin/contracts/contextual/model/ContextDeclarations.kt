@@ -10,25 +10,12 @@ import org.jetbrains.kotlin.contracts.model.ESValue
 import org.jetbrains.kotlin.psi.KtElement
 import org.jetbrains.kotlin.resolve.BindingContext
 
-interface ContextEntityDeclaration
-
-interface ProviderDeclaration : ContextEntityDeclaration {
+interface ContextEntityDeclaration<T : ContextEntity> {
     val family: ContextFamily
     val references: List<ContractDescriptionValue>
-
-    fun bind(sourceElement: KtElement, references: List<ESValue?>, bindingContext: BindingContext): ContextProvider?
+    fun bind(sourceElement: KtElement, references: List<ESValue?>, bindingContext: BindingContext): T?
 }
 
-interface VerifierDeclaration : ContextEntityDeclaration {
-    val family: ContextFamily
-    val references: List<ContractDescriptionValue>
-
-    fun bind(sourceElement: KtElement, references: List<ESValue?>, bindingContext: BindingContext): ContextVerifier?
-}
-
-interface CleanerDeclaration : ContextEntityDeclaration {
-    val family: ContextFamily
-    val references: List<ContractDescriptionValue>
-
-    fun bind(sourceElement: KtElement, references: List<ESValue?>, bindingContext: BindingContext): ContextCleaner?
-}
+interface ProviderDeclaration : ContextEntityDeclaration<ContextProvider>
+interface VerifierDeclaration : ContextEntityDeclaration<ContextVerifier>
+interface CleanerDeclaration : ContextEntityDeclaration<ContextCleaner>

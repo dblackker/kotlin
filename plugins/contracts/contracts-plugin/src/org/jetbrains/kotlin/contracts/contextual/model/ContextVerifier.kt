@@ -8,7 +8,6 @@ package org.jetbrains.kotlin.contracts.contextual.model
 import org.jetbrains.kotlin.contracts.contextual.cfg.ContextContracts
 import org.jetbrains.kotlin.diagnostics.DiagnosticSink
 
-interface ContextVerifier {
-    val family: ContextFamily
+interface ContextVerifier : ContextEntity {
     fun verify(contexts: List<Context>, diagnosticSink: DiagnosticSink, declaredContracts: ContextContracts)
 }

@@ -5,6 +5,4 @@
 
 package org.jetbrains.kotlin.contracts.contextual.model
 
-interface ContextProvider {
-    val family: ContextFamily
-}
+interface ContextProvider : ContextEntity

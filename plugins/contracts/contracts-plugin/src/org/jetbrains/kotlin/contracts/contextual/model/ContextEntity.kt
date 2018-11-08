@@ -5,6 +5,6 @@
 
 package org.jetbrains.kotlin.contracts.contextual.model
 
-interface ContextCleaner : ContextEntity {
-    fun cleanupProcessed(context: Context): Context
+interface ContextEntity {
+    val family: ContextFamily
 }
