@@ -70,7 +70,8 @@ object ContractsDslNames {
     val RECEIVER_OF = Name.identifier("receiverOf")
 }
 
-fun DeclarationDescriptor.isFromContractDsl(): Boolean = this.annotations.hasAnnotation(CONTRACTS_DSL_ANNOTATION_FQN) || this.annotations.hasAnnotation(EXTENSION_CONTRACTS_DSL_ANNOTATION_FQN)
+fun DeclarationDescriptor.isFromContractDsl(): Boolean =
+    this.annotations.hasAnnotation(CONTRACTS_DSL_ANNOTATION_FQN) || this.annotations.hasAnnotation(EXTENSION_CONTRACTS_DSL_ANNOTATION_FQN)
 
 fun DeclarationDescriptor.isContractCallDescriptor(): Boolean = equalsDslDescriptor(CONTRACT)
 
@@ -103,3 +104,12 @@ fun ResolvedCall<*>.argumentAsExpressionOrNull(index: Int): KtExpression? =
     this.valueArgumentsByIndex?.getOrNull(index)?.safeAs<ExpressionValueArgument>()?.valueArgument?.getArgumentExpression()
 
 fun DeclarationDescriptor.equalsDslDescriptor(dslName: Name): Boolean = this.name == dslName && this.isFromContractDsl()
+
+private val NO_NAME_FUNCTION = Name.special("<no name provided>")
+private val LAMBDA_FUNCTION = Name.special("<anonymous>")
+
+val FunctionDescriptor.isAnonymous: Boolean
+    get() = name == NO_NAME_FUNCTION
+
+val FunctionDescriptor.isLambda: Boolean
+    get() = name == LAMBDA_FUNCTION
