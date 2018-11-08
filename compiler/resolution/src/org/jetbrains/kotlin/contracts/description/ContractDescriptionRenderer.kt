@@ -35,7 +35,11 @@ class ContractDescriptionRenderer(private val builder: StringBuilder) : Contract
         builder.append("CallsInPlace(")
         callsEffect.variableReference.accept(this, data)
         builder.append(", ${callsEffect.kind})")
+    }
 
+    override fun visitExtensionEffect(extensionEffect: ExtensionEffectDeclaration, data: Unit) {
+        builder.append("ExtensionEffect:")
+        builder.append(extensionEffect.toString())
     }
 
     override fun visitLogicalOr(logicalOr: LogicalOr, data: Unit) {

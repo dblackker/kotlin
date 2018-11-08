@@ -43,5 +43,4 @@ class ConditionalEffect(val condition: ESExpression, val simpleEffect: SimpleEff
     override fun isImplies(other: ESEffect): Boolean? = null
 }
 
-
-
+abstract class ExtensionEffect : ESEffect()

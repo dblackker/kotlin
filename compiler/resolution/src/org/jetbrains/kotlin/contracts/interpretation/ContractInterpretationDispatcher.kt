@@ -22,16 +22,22 @@ import org.jetbrains.kotlin.contracts.description.expressions.FunctionReference
 import org.jetbrains.kotlin.contracts.description.expressions.ReceiverReference
 import org.jetbrains.kotlin.contracts.description.expressions.VariableReference
 import org.jetbrains.kotlin.contracts.model.*
+import org.jetbrains.kotlin.contracts.model.functors.ExtensionSubstitutor
 import org.jetbrains.kotlin.contracts.model.functors.SubstitutingFunctor
 import org.jetbrains.kotlin.contracts.model.structure.ESConstant
 import org.jetbrains.kotlin.contracts.model.structure.ESVariable
 import org.jetbrains.kotlin.contracts.model.visitors.AdditionalReducer
+import org.jetbrains.kotlin.contracts.model.visitors.ExtensionReducerConstructor
 import org.jetbrains.kotlin.descriptors.FunctionDescriptor
 
 /**
  * This class manages conversion of [ContractDescription] to [Functor]
  */
-class ContractInterpretationDispatcher {
+class ContractInterpretationDispatcher(
+    extensionInterpretersConstructors: Collection<(ContractInterpretationDispatcher) -> EffectDeclarationInterpreter>,
+    private val extensionReducerConstructors: Collection<ExtensionReducerConstructor>,
+    private val extensionSubstitutors: Collection<ExtensionSubstitutor>
+) {
     private val constantsInterpreter = ConstantValuesInterpreter()
     private val conditionInterpreter = ConditionInterpreter(this)
     private val conditionalEffectInterpreter = ConditionalEffectInterpreter(this)
@@ -39,6 +45,8 @@ class ContractInterpretationDispatcher {
         ReturnsEffectInterpreter(this),
         CallsEffectInterpreter(this)
     )
+
+    private val extensionInterpreters: Collection<EffectDeclarationInterpreter> = extensionInterpretersConstructors.map { it(this) }
 
     fun resolveFunctor(functionDescriptor: FunctionDescriptor, additionalReducer: AdditionalReducer): Functor? {
         val contractDescriptor = functionDescriptor.getUserData(ContractProviderKey)?.getContractDescription() ?: return null
@@ -50,14 +58,20 @@ class ContractInterpretationDispatcher {
         additionalReducer: AdditionalReducer
     ): Functor? {
         val resultingClauses = contractDescription.effects.map { effect ->
-            if (effect is ConditionalEffectDeclaration) {
-                conditionalEffectInterpreter.interpret(effect) ?: return null
-            } else {
-                effectsInterpreters.mapNotNull { it.tryInterpret(effect) }.singleOrNull() ?: return null
+            when (effect) {
+                is ConditionalEffectDeclaration -> conditionalEffectInterpreter.interpret(effect) ?: return null
+                is ExtensionEffectDeclaration -> extensionInterpreters.mapNotNull { it.tryInterpret(effect) }.singleOrNull() ?: return null
+                else -> effectsInterpreters.mapNotNull { it.tryInterpret(effect) }.singleOrNull() ?: return null
             }
         }
 
-        return SubstitutingFunctor(resultingClauses, contractDescription.ownerFunction, additionalReducer)
+        return SubstitutingFunctor(
+            resultingClauses,
+            contractDescription.ownerFunction,
+            additionalReducer,
+            extensionSubstitutors,
+            extensionReducerConstructors
+        )
     }
 
     internal fun interpretEffect(effectDeclaration: EffectDeclaration): ESEffect? {
@@ -71,11 +85,11 @@ class ContractInterpretationDispatcher {
     internal fun interpretCondition(booleanExpression: BooleanExpression): ESExpression? =
         booleanExpression.accept(conditionInterpreter, Unit)
 
-    internal fun interpretVariable(variableReference: VariableReference): ESVariable? = ESVariable(variableReference.descriptor)
+    fun interpretVariable(variableReference: VariableReference): ESVariable? = ESVariable(variableReference.descriptor)
 
-    internal fun interpretFunction(functionReference: FunctionReference): ESFunction? = ESFunction(functionReference.descriptor)
+    fun interpretFunction(functionReference: FunctionReference): ESFunction? = ESFunction(functionReference.descriptor)
 
-    internal fun interpretReceiverReference(receiverReference: ReceiverReference): ESReceiverReference? {
+    fun interpretReceiverReference(receiverReference: ReceiverReference): ESReceiverReference? {
         val variableReference = interpretVariable(receiverReference.variableReference) ?: return null
         return ESReceiverReference(variableReference)
     }

@@ -28,6 +28,7 @@ import org.jetbrains.kotlin.diagnostics.Diagnostic
 import org.jetbrains.kotlin.diagnostics.DiagnosticFactory
 import org.jetbrains.kotlin.diagnostics.Errors
 import org.jetbrains.kotlin.diagnostics.Errors.*
+import org.jetbrains.kotlin.extensions.ContractsExtension
 import org.jetbrains.kotlin.idea.MainFunctionDetector
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
@@ -117,6 +118,16 @@ class ControlFlowInformationProvider private constructor(
         checkDefiniteReturn(expectedReturnType ?: NO_EXPECTED_TYPE, unreachableCode)
 
         markAndCheckTailCalls()
+
+        runExtensionAnalyzers()
+    }
+
+    private fun runExtensionAnalyzers() {
+        if (subroutine !is KtFunction) return
+
+        ContractsExtension.getInstances(subroutine.project).forEach {
+            it.analyzeFunction(subroutine, pseudocode, trace.bindingContext, trace)
+        }
     }
 
     /**
@@ -913,7 +924,7 @@ class ControlFlowInformationProvider private constructor(
         if (subroutine is KtNamedFunction && !subroutine.hasBody()) return
 
         // finally blocks are copied which leads to multiple diagnostics reported on one instruction
-        class KindAndCall(var kind: TailRecursionKind, internal val call: ResolvedCall<*>)
+        class KindAndCall(var kind: TailRecursionKind, val call: ResolvedCall<*>)
 
         val calls = HashMap<KtElement, KindAndCall>()
         traverseCalls traverse@{ instruction, resolvedCall ->
