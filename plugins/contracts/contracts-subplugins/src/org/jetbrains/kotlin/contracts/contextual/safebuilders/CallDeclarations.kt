@@ -31,7 +31,7 @@ internal class CallProviderDeclaration(override val references: List<ContractDes
 }
 
 internal class CallVerifierDeclaration(
-    private val kind: InvocationKind,
+    internal val kind: InvocationKind,
     override val references: List<ContractDescriptionValue>
 ) : VerifierDeclaration {
     override val family = CallFamily
@@ -46,7 +46,7 @@ internal class CallVerifierDeclaration(
 }
 
 internal class CallCleanerDeclaration(
-    private val kind: InvocationKind,
+    internal val kind: InvocationKind,
     override val references: List<ContractDescriptionValue>
 ) : CleanerDeclaration {
     override val family = CallFamily

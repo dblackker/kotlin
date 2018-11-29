@@ -8,6 +8,10 @@ package org.jetbrains.kotlin.contracts.contextual.transactions
 import org.jetbrains.kotlin.contracts.contextual.extensions.SpecificContractExtension
 import org.jetbrains.kotlin.contracts.contextual.model.ContextFamily
 import org.jetbrains.kotlin.contracts.contextual.parsing.PsiEffectDeclarationExtractor
+import org.jetbrains.kotlin.contracts.contextual.serialization.SubpluginContractDeserializer
+import org.jetbrains.kotlin.contracts.contextual.serialization.SubpluginContractSerializer
+import org.jetbrains.kotlin.contracts.contextual.transactions.serialization.TransactionContractDeserializer
+import org.jetbrains.kotlin.contracts.contextual.transactions.serialization.TransactionContractSerializer
 import org.jetbrains.kotlin.contracts.parsing.PsiContractVariableParserDispatcher
 import org.jetbrains.kotlin.resolve.BindingContext
 
@@ -16,4 +20,8 @@ class TransactionContract : SpecificContractExtension {
 
     override fun getParser(bindingContext: BindingContext, dispatcher: PsiContractVariableParserDispatcher): PsiEffectDeclarationExtractor =
         PsiTransactionEffectDeclarationExtractor(bindingContext, dispatcher)
+
+    override val subpluginContractSerializer: SubpluginContractSerializer = TransactionContractSerializer()
+
+    override val subpluginContractDeserializer: SubpluginContractDeserializer = TransactionContractDeserializer()
 }

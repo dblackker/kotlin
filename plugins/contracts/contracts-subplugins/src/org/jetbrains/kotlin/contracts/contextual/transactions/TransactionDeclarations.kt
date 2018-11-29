@@ -25,7 +25,10 @@ internal class TransactionProviderDeclaration(override val references: List<Cont
     override fun toString(): String = "opened transaction"
 }
 
-internal class ClosedTransactionVerifierDeclaration(override val references: List<ContractDescriptionValue>) : VerifierDeclaration {
+sealed class TransactionVerifierDeclaration : VerifierDeclaration
+
+internal class ClosedTransactionVerifierDeclaration(override val references: List<ContractDescriptionValue>) :
+    TransactionVerifierDeclaration() {
     override val family = TransactionFamily
 
     override fun bind(sourceElement: KtElement, references: List<ESValue?>, bindingContext: BindingContext): ContextVerifier? {
@@ -36,7 +39,8 @@ internal class ClosedTransactionVerifierDeclaration(override val references: Lis
     override fun toString(): String = "no opened transaction"
 }
 
-internal class OpenedTransactionVerifierDeclaration(override val references: List<ContractDescriptionValue>) : VerifierDeclaration {
+internal class OpenedTransactionVerifierDeclaration(override val references: List<ContractDescriptionValue>) :
+    TransactionVerifierDeclaration() {
     override val family = TransactionFamily
 
     override fun bind(sourceElement: KtElement, references: List<ESValue?>, bindingContext: BindingContext): ContextVerifier? {
