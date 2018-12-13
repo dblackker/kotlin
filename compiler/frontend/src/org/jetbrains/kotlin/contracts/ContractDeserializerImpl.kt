@@ -16,11 +16,14 @@
 
 package org.jetbrains.kotlin.contracts
 
+import com.intellij.openapi.project.Project
 import org.jetbrains.kotlin.builtins.KotlinBuiltIns
 import org.jetbrains.kotlin.contracts.description.*
 import org.jetbrains.kotlin.contracts.description.expressions.*
 import org.jetbrains.kotlin.descriptors.CallableDescriptor
 import org.jetbrains.kotlin.descriptors.FunctionDescriptor
+import org.jetbrains.kotlin.descriptors.ParameterDescriptor
+import org.jetbrains.kotlin.extensions.ContractsExtension
 import org.jetbrains.kotlin.metadata.ProtoBuf
 import org.jetbrains.kotlin.metadata.deserialization.Flags
 import org.jetbrains.kotlin.metadata.deserialization.TypeTable
@@ -31,7 +34,8 @@ import org.jetbrains.kotlin.serialization.deserialization.TypeDeserializer
 import org.jetbrains.kotlin.types.KotlinType
 import org.jetbrains.kotlin.utils.addIfNotNull
 
-class ContractDeserializerImpl(private val configuration: DeserializationConfiguration) : ContractDeserializer {
+class ContractDeserializerImpl(private val configuration: DeserializationConfiguration, private val project: Project?) :
+    ContractDeserializer {
     override fun deserializeContractFromFunction(
         proto: ProtoBuf.Function,
         ownerFunction: FunctionDescriptor,
@@ -42,15 +46,16 @@ class ContractDeserializerImpl(private val configuration: DeserializationConfigu
 
         if (!configuration.readDeserializedContracts) return null
 
-        val worker = ContractDeserializationWorker(typeTable, typeDeserializer, ownerFunction)
+        val worker = ContractDeserializationWorker(typeTable, typeDeserializer, ownerFunction, project)
         val contract = worker.deserializeContract(proto.contract)
         return ContractProviderKey to LazyContractProvider.createInitialized(contract)
     }
 
-    private class ContractDeserializationWorker(
+    class ContractDeserializationWorker(
         private val typeTable: TypeTable,
         private val typeDeserializer: TypeDeserializer,
-        private val ownerFunction: FunctionDescriptor
+        private val ownerFunction: FunctionDescriptor,
+        private val project: Project?
     ) {
 
         fun deserializeContract(proto: ProtoBuf.Contract): ContractDescription? {
@@ -59,6 +64,9 @@ class ContractDeserializerImpl(private val configuration: DeserializationConfigu
         }
 
         private fun deserializePossiblyConditionalEffect(proto: ProtoBuf.Effect): EffectDeclaration? {
+            if (proto.hasIsExtensionEffect()) {
+                return deserializeExtensionEffect(proto)
+            }
             if (proto.hasConclusionOfConditionalEffect()) {
                 // conditional effect
                 val conclusion = deserializeExpression(proto.conclusionOfConditionalEffect) ?: return null
@@ -68,6 +76,12 @@ class ContractDeserializerImpl(private val configuration: DeserializationConfigu
             return deserializeSimpleEffect(proto)
         }
 
+        private fun deserializeExtensionEffect(proto: ProtoBuf.Effect): EffectDeclaration? {
+            if (project == null) return null
+            val deserializer = ContractsExtension.getInstances(project).firstOrNull() ?: return null
+            return deserializer.deserializeExtensionEffect(proto, project, ownerFunction, this)
+        }
+
         private fun deserializeSimpleEffect(proto: ProtoBuf.Effect): EffectDeclaration? {
             val type = if (proto.hasEffectType()) proto.effectType else return null
             return when (type!!) {
@@ -75,7 +89,7 @@ class ContractDeserializerImpl(private val configuration: DeserializationConfigu
                     val argument = proto.effectConstructorArgumentList.getOrNull(0)
                     val returnValue =
                         if (argument == null) ConstantReference.WILDCARD else deserializeExpression(argument) as? ConstantReference
-                                ?: return null
+                            ?: return null
                     ReturnsEffectDeclaration(returnValue)
                 }
 
@@ -146,18 +160,40 @@ class ContractDeserializerImpl(private val configuration: DeserializationConfigu
 
         private fun BooleanExpression.invertIfNecessary(shouldInvert: Boolean) = if (shouldInvert) LogicalNot(this) else this
 
-        private fun extractVariable(proto: ProtoBuf.Expression): VariableReference? {
+        fun extractExpression(proto: ProtoBuf.Expression): ContractDescriptionValue? {
+            if (proto.hasFunctionReference()) return extractFunction(proto)
+            if (proto.hasIsReceiverReference()) return extractReceiver(proto)
+            return extractVariable(proto)
+        }
+
+        fun extractVariable(proto: ProtoBuf.Expression): VariableReference? {
             if (!proto.hasValueParameterReference()) return null
 
-            val parameterDescriptor = if (proto.valueParameterReference == 0)
-                ownerFunction.extensionReceiverParameter ?: return null
-            else
-                ownerFunction.valueParameters.getOrNull(proto.valueParameterReference - 1) ?: return null
+            // TODO: i'm not sure is that absolutely correct
+            val parameterDescriptor: ParameterDescriptor = when (proto.valueParameterReference) {
+                -1 -> ownerFunction.dispatchReceiverParameter ?: return null
+                0 -> ownerFunction.extensionReceiverParameter ?: return null
+                else -> ownerFunction.valueParameters.getOrNull(proto.valueParameterReference - 1) ?: return null
+            }
 
             return if (!KotlinBuiltIns.isBoolean(parameterDescriptor.type))
                 VariableReference(parameterDescriptor)
             else
                 BooleanVariableReference(parameterDescriptor)
+        }
+
+        fun extractReceiver(proto: ProtoBuf.Expression): ReceiverReference? {
+            if (!proto.hasIsReceiverReference()) return null
+            val variableReference = extractVariable(proto) ?: return null
+            return ReceiverReference(variableReference)
+        }
+
+        fun extractFunction(proto: ProtoBuf.Expression): FunctionReference? {
+            if (!proto.hasFunctionReference()) return null
+            val funcName = proto.functionReference ?: return null
+            val ownerClassName: String? = if (proto.hasFunctionOwnerClassName()) proto.functionOwnerClassName else null
+
+            return LazyFunctionReference(ownerFunction, funcName, ownerClassName)
         }
 
         private fun ProtoBuf.Effect.InvocationKind.toDescriptorInvocationKind(): InvocationKind? = when (this) {
@@ -166,8 +202,14 @@ class ContractDeserializerImpl(private val configuration: DeserializationConfigu
             ProtoBuf.Effect.InvocationKind.AT_LEAST_ONCE -> InvocationKind.AT_LEAST_ONCE
         }
 
+        fun extractInvocationKind(kind: ProtoBuf.Effect.InvocationKind): InvocationKind? = kind.toDescriptorInvocationKind()
+
         private fun extractType(proto: ProtoBuf.Expression): KotlinType? {
             return typeDeserializer.type(proto.isInstanceType(typeTable) ?: return null)
+        }
+
+        fun extractType(proto: ProtoBuf.Type): KotlinType? {
+            return typeDeserializer.type(proto)
         }
 
         private fun deserializeConstant(value: ProtoBuf.Expression.ConstantValue): ConstantReference? = when (value) {

@@ -530,6 +530,11 @@ message Effect {
     AT_LEAST_ONCE = 2;
   }
   optional InvocationKind kind = 4;
+
+  // If present, then effect is extension
+  optional int32 isExtensionEffect = 5;
+
+  extensions 100 to 199;
 }
 
 // We use some trickery to optimize memory footprint of contract-expressions:
@@ -543,6 +548,7 @@ message Expression {
 
   // stored as index in valueParameters list of owner-function in 1-indexation
   // Index '0' is reserved for extension receiver
+  // Index '-1' is reserved for dispatch receiver
   optional int32 value_parameter_reference = 2;
 
   enum ConstantValue {
@@ -566,4 +572,16 @@ message Expression {
   // Additionally, if first argument of formula is primitive expression (i.e. predicate or value),
   // it is optimized and embedded straight into this message.
   repeated Expression or_argument = 7;
+
+  // non-empty => this expression is reference to function
+  //  field contains name of function
+  optional string functionReference = 8;
+
+  // can be non empty only if [functionReference] non-empty
+  //  contains full qualified name of class containing function
+  //  empty, if function is top-level
+  optional string functionOwnerClassName = 9;
+
+  // non-empty => this expression is receiverOf(arguments[value_parameter_reference]
+  optional int32 isReceiverReference = 10;
 }

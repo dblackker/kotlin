@@ -11,6 +11,8 @@ dependencies {
     compile(project(":compiler:frontend"))
     compile(project(":core:descriptors"))
     compile(project(":core:deserialization"))
+
+    compile(intellijCoreDep()) { includeJars("intellij-core") }
 }
 
 sourceSets {

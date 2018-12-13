@@ -23765,9 +23765,10 @@ public final class ProtoBuf {
     // @@protoc_insertion_point(class_scope:org.jetbrains.kotlin.metadata.Contract)
   }
 
-  public interface EffectOrBuilder extends
+  public interface EffectOrBuilder extends 
       // @@protoc_insertion_point(interface_extends:org.jetbrains.kotlin.metadata.Effect)
-      org.jetbrains.kotlin.protobuf.MessageLiteOrBuilder {
+       org.jetbrains.kotlin.protobuf.GeneratedMessageLite.
+            ExtendableMessageOrBuilder<Effect> {
 
     /**
      * <code>optional .org.jetbrains.kotlin.metadata.Effect.EffectType effect_type = 1;</code>
@@ -23819,16 +23820,34 @@ public final class ProtoBuf {
      * <code>optional .org.jetbrains.kotlin.metadata.Effect.InvocationKind kind = 4;</code>
      */
     org.jetbrains.kotlin.metadata.ProtoBuf.Effect.InvocationKind getKind();
+
+    /**
+     * <code>optional int32 isExtensionEffect = 5;</code>
+     *
+     * <pre>
+     * If present, then effect is extension
+     * </pre>
+     */
+    boolean hasIsExtensionEffect();
+    /**
+     * <code>optional int32 isExtensionEffect = 5;</code>
+     *
+     * <pre>
+     * If present, then effect is extension
+     * </pre>
+     */
+    int getIsExtensionEffect();
   }
   /**
    * Protobuf type {@code org.jetbrains.kotlin.metadata.Effect}
    */
   public static final class Effect extends
-      org.jetbrains.kotlin.protobuf.GeneratedMessageLite implements
+      org.jetbrains.kotlin.protobuf.GeneratedMessageLite.ExtendableMessage<
+        Effect> implements
       // @@protoc_insertion_point(message_implements:org.jetbrains.kotlin.metadata.Effect)
       EffectOrBuilder {
     // Use Effect.newBuilder() to construct.
-    private Effect(org.jetbrains.kotlin.protobuf.GeneratedMessageLite.Builder builder) {
+    private Effect(org.jetbrains.kotlin.protobuf.GeneratedMessageLite.ExtendableBuilder<org.jetbrains.kotlin.metadata.ProtoBuf.Effect, ?> builder) {
       super(builder);
       this.unknownFields = builder.getUnknownFields();
     }
@@ -23913,6 +23932,11 @@ public final class ProtoBuf {
                 bitField0_ |= 0x00000004;
                 kind_ = value;
               }
+              break;
+            }
+            case 40: {
+              bitField0_ |= 0x00000008;
+              isExtensionEffect_ = input.readInt32();
               break;
             }
           }
@@ -24206,11 +24230,35 @@ public final class ProtoBuf {
       return kind_;
     }
 
+    public static final int ISEXTENSIONEFFECT_FIELD_NUMBER = 5;
+    private int isExtensionEffect_;
+    /**
+     * <code>optional int32 isExtensionEffect = 5;</code>
+     *
+     * <pre>
+     * If present, then effect is extension
+     * </pre>
+     */
+    public boolean hasIsExtensionEffect() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <code>optional int32 isExtensionEffect = 5;</code>
+     *
+     * <pre>
+     * If present, then effect is extension
+     * </pre>
+     */
+    public int getIsExtensionEffect() {
+      return isExtensionEffect_;
+    }
+
     private void initFields() {
       effectType_ = org.jetbrains.kotlin.metadata.ProtoBuf.Effect.EffectType.RETURNS_CONSTANT;
       effectConstructorArgument_ = java.util.Collections.emptyList();
       conclusionOfConditionalEffect_ = org.jetbrains.kotlin.metadata.ProtoBuf.Expression.getDefaultInstance();
       kind_ = org.jetbrains.kotlin.metadata.ProtoBuf.Effect.InvocationKind.AT_MOST_ONCE;
+      isExtensionEffect_ = 0;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -24230,6 +24278,10 @@ public final class ProtoBuf {
           return false;
         }
       }
+      if (!extensionsAreInitialized()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -24237,6 +24289,9 @@ public final class ProtoBuf {
     public void writeTo(org.jetbrains.kotlin.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
+      org.jetbrains.kotlin.protobuf.GeneratedMessageLite
+        .ExtendableMessage<org.jetbrains.kotlin.metadata.ProtoBuf.Effect>.ExtensionWriter extensionWriter =
+          newExtensionWriter();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         output.writeEnum(1, effectType_.getNumber());
       }
@@ -24249,6 +24304,10 @@ public final class ProtoBuf {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeEnum(4, kind_.getNumber());
       }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeInt32(5, isExtensionEffect_);
+      }
+      extensionWriter.writeUntil(200, output);
       output.writeRawBytes(unknownFields);
     }
 
@@ -24274,6 +24333,11 @@ public final class ProtoBuf {
         size += org.jetbrains.kotlin.protobuf.CodedOutputStream
           .computeEnumSize(4, kind_.getNumber());
       }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += org.jetbrains.kotlin.protobuf.CodedOutputStream
+          .computeInt32Size(5, isExtensionEffect_);
+      }
+      size += extensionsSerializedSize();
       size += unknownFields.size();
       memoizedSerializedSize = size;
       return size;
@@ -24350,9 +24414,8 @@ public final class ProtoBuf {
      * Protobuf type {@code org.jetbrains.kotlin.metadata.Effect}
      */
     public static final class Builder extends
-        org.jetbrains.kotlin.protobuf.GeneratedMessageLite.Builder<
-          org.jetbrains.kotlin.metadata.ProtoBuf.Effect, Builder>
-        implements
+        org.jetbrains.kotlin.protobuf.GeneratedMessageLite.ExtendableBuilder<
+          org.jetbrains.kotlin.metadata.ProtoBuf.Effect, Builder> implements
         // @@protoc_insertion_point(builder_implements:org.jetbrains.kotlin.metadata.Effect)
         org.jetbrains.kotlin.metadata.ProtoBuf.EffectOrBuilder {
       // Construct using org.jetbrains.kotlin.metadata.ProtoBuf.Effect.newBuilder()
@@ -24376,6 +24439,8 @@ public final class ProtoBuf {
         bitField0_ = (bitField0_ & ~0x00000004);
         kind_ = org.jetbrains.kotlin.metadata.ProtoBuf.Effect.InvocationKind.AT_MOST_ONCE;
         bitField0_ = (bitField0_ & ~0x00000008);
+        isExtensionEffect_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000010);
         return this;
       }
 
@@ -24416,6 +24481,10 @@ public final class ProtoBuf {
           to_bitField0_ |= 0x00000004;
         }
         result.kind_ = kind_;
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.isExtensionEffect_ = isExtensionEffect_;
         result.bitField0_ = to_bitField0_;
         return result;
       }
@@ -24441,6 +24510,10 @@ public final class ProtoBuf {
         if (other.hasKind()) {
           setKind(other.getKind());
         }
+        if (other.hasIsExtensionEffect()) {
+          setIsExtensionEffect(other.getIsExtensionEffect());
+        }
+        this.mergeExtensionFields(other);
         setUnknownFields(
             getUnknownFields().concat(other.unknownFields));
         return this;
@@ -24458,6 +24531,10 @@ public final class ProtoBuf {
             
             return false;
           }
+        }
+        if (!extensionsAreInitialized()) {
+          
+          return false;
         }
         return true;
       }
@@ -24766,6 +24843,54 @@ public final class ProtoBuf {
         return this;
       }
 
+      private int isExtensionEffect_ ;
+      /**
+       * <code>optional int32 isExtensionEffect = 5;</code>
+       *
+       * <pre>
+       * If present, then effect is extension
+       * </pre>
+       */
+      public boolean hasIsExtensionEffect() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      /**
+       * <code>optional int32 isExtensionEffect = 5;</code>
+       *
+       * <pre>
+       * If present, then effect is extension
+       * </pre>
+       */
+      public int getIsExtensionEffect() {
+        return isExtensionEffect_;
+      }
+      /**
+       * <code>optional int32 isExtensionEffect = 5;</code>
+       *
+       * <pre>
+       * If present, then effect is extension
+       * </pre>
+       */
+      public Builder setIsExtensionEffect(int value) {
+        bitField0_ |= 0x00000010;
+        isExtensionEffect_ = value;
+        
+        return this;
+      }
+      /**
+       * <code>optional int32 isExtensionEffect = 5;</code>
+       *
+       * <pre>
+       * If present, then effect is extension
+       * </pre>
+       */
+      public Builder clearIsExtensionEffect() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        isExtensionEffect_ = 0;
+        
+        return this;
+      }
+
       // @@protoc_insertion_point(builder_scope:org.jetbrains.kotlin.metadata.Effect)
     }
 
@@ -24806,6 +24931,7 @@ public final class ProtoBuf {
      * <pre>
      * stored as index in valueParameters list of owner-function in 1-indexation
      * Index '0' is reserved for extension receiver
+     * Index '-1' is reserved for dispatch receiver
      * </pre>
      */
     boolean hasValueParameterReference();
@@ -24815,6 +24941,7 @@ public final class ProtoBuf {
      * <pre>
      * stored as index in valueParameters list of owner-function in 1-indexation
      * Index '0' is reserved for extension receiver
+     * Index '-1' is reserved for dispatch receiver
      * </pre>
      */
     int getValueParameterReference();
@@ -24919,6 +25046,84 @@ public final class ProtoBuf {
      * </pre>
      */
     int getOrArgumentCount();
+
+    /**
+     * <code>optional string functionReference = 8;</code>
+     *
+     * <pre>
+     * non-empty =&gt; this expression is reference to function
+     *  field contains name of function
+     * </pre>
+     */
+    boolean hasFunctionReference();
+    /**
+     * <code>optional string functionReference = 8;</code>
+     *
+     * <pre>
+     * non-empty =&gt; this expression is reference to function
+     *  field contains name of function
+     * </pre>
+     */
+    java.lang.String getFunctionReference();
+    /**
+     * <code>optional string functionReference = 8;</code>
+     *
+     * <pre>
+     * non-empty =&gt; this expression is reference to function
+     *  field contains name of function
+     * </pre>
+     */
+    org.jetbrains.kotlin.protobuf.ByteString
+        getFunctionReferenceBytes();
+
+    /**
+     * <code>optional string functionOwnerClassName = 9;</code>
+     *
+     * <pre>
+     * can be non empty only if [functionReference] non-empty
+     *  contains full qualified name of class containing function
+     *  empty, if function is top-level
+     * </pre>
+     */
+    boolean hasFunctionOwnerClassName();
+    /**
+     * <code>optional string functionOwnerClassName = 9;</code>
+     *
+     * <pre>
+     * can be non empty only if [functionReference] non-empty
+     *  contains full qualified name of class containing function
+     *  empty, if function is top-level
+     * </pre>
+     */
+    java.lang.String getFunctionOwnerClassName();
+    /**
+     * <code>optional string functionOwnerClassName = 9;</code>
+     *
+     * <pre>
+     * can be non empty only if [functionReference] non-empty
+     *  contains full qualified name of class containing function
+     *  empty, if function is top-level
+     * </pre>
+     */
+    org.jetbrains.kotlin.protobuf.ByteString
+        getFunctionOwnerClassNameBytes();
+
+    /**
+     * <code>optional int32 isReceiverReference = 10;</code>
+     *
+     * <pre>
+     * non-empty =&gt; this expression is receiverOf(arguments[value_parameter_reference]
+     * </pre>
+     */
+    boolean hasIsReceiverReference();
+    /**
+     * <code>optional int32 isReceiverReference = 10;</code>
+     *
+     * <pre>
+     * non-empty =&gt; this expression is receiverOf(arguments[value_parameter_reference]
+     * </pre>
+     */
+    int getIsReceiverReference();
   }
   /**
    * Protobuf type {@code org.jetbrains.kotlin.metadata.Expression}
@@ -25029,6 +25234,23 @@ public final class ProtoBuf {
                 mutable_bitField0_ |= 0x00000040;
               }
               orArgument_.add(input.readMessage(org.jetbrains.kotlin.metadata.ProtoBuf.Expression.PARSER, extensionRegistry));
+              break;
+            }
+            case 66: {
+              org.jetbrains.kotlin.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000020;
+              functionReference_ = bs;
+              break;
+            }
+            case 74: {
+              org.jetbrains.kotlin.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000040;
+              functionOwnerClassName_ = bs;
+              break;
+            }
+            case 80: {
+              bitField0_ |= 0x00000080;
+              isReceiverReference_ = input.readInt32();
               break;
             }
           }
@@ -25169,6 +25391,7 @@ public final class ProtoBuf {
      * <pre>
      * stored as index in valueParameters list of owner-function in 1-indexation
      * Index '0' is reserved for extension receiver
+     * Index '-1' is reserved for dispatch receiver
      * </pre>
      */
     public boolean hasValueParameterReference() {
@@ -25180,6 +25403,7 @@ public final class ProtoBuf {
      * <pre>
      * stored as index in valueParameters list of owner-function in 1-indexation
      * Index '0' is reserved for extension receiver
+     * Index '-1' is reserved for dispatch receiver
      * </pre>
      */
     public int getValueParameterReference() {
@@ -25371,6 +25595,146 @@ public final class ProtoBuf {
       return orArgument_.get(index);
     }
 
+    public static final int FUNCTIONREFERENCE_FIELD_NUMBER = 8;
+    private java.lang.Object functionReference_;
+    /**
+     * <code>optional string functionReference = 8;</code>
+     *
+     * <pre>
+     * non-empty =&gt; this expression is reference to function
+     *  field contains name of function
+     * </pre>
+     */
+    public boolean hasFunctionReference() {
+      return ((bitField0_ & 0x00000020) == 0x00000020);
+    }
+    /**
+     * <code>optional string functionReference = 8;</code>
+     *
+     * <pre>
+     * non-empty =&gt; this expression is reference to function
+     *  field contains name of function
+     * </pre>
+     */
+    public java.lang.String getFunctionReference() {
+      java.lang.Object ref = functionReference_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        org.jetbrains.kotlin.protobuf.ByteString bs = 
+            (org.jetbrains.kotlin.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          functionReference_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string functionReference = 8;</code>
+     *
+     * <pre>
+     * non-empty =&gt; this expression is reference to function
+     *  field contains name of function
+     * </pre>
+     */
+    public org.jetbrains.kotlin.protobuf.ByteString
+        getFunctionReferenceBytes() {
+      java.lang.Object ref = functionReference_;
+      if (ref instanceof java.lang.String) {
+        org.jetbrains.kotlin.protobuf.ByteString b = 
+            org.jetbrains.kotlin.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        functionReference_ = b;
+        return b;
+      } else {
+        return (org.jetbrains.kotlin.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int FUNCTIONOWNERCLASSNAME_FIELD_NUMBER = 9;
+    private java.lang.Object functionOwnerClassName_;
+    /**
+     * <code>optional string functionOwnerClassName = 9;</code>
+     *
+     * <pre>
+     * can be non empty only if [functionReference] non-empty
+     *  contains full qualified name of class containing function
+     *  empty, if function is top-level
+     * </pre>
+     */
+    public boolean hasFunctionOwnerClassName() {
+      return ((bitField0_ & 0x00000040) == 0x00000040);
+    }
+    /**
+     * <code>optional string functionOwnerClassName = 9;</code>
+     *
+     * <pre>
+     * can be non empty only if [functionReference] non-empty
+     *  contains full qualified name of class containing function
+     *  empty, if function is top-level
+     * </pre>
+     */
+    public java.lang.String getFunctionOwnerClassName() {
+      java.lang.Object ref = functionOwnerClassName_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        org.jetbrains.kotlin.protobuf.ByteString bs = 
+            (org.jetbrains.kotlin.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          functionOwnerClassName_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string functionOwnerClassName = 9;</code>
+     *
+     * <pre>
+     * can be non empty only if [functionReference] non-empty
+     *  contains full qualified name of class containing function
+     *  empty, if function is top-level
+     * </pre>
+     */
+    public org.jetbrains.kotlin.protobuf.ByteString
+        getFunctionOwnerClassNameBytes() {
+      java.lang.Object ref = functionOwnerClassName_;
+      if (ref instanceof java.lang.String) {
+        org.jetbrains.kotlin.protobuf.ByteString b = 
+            org.jetbrains.kotlin.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        functionOwnerClassName_ = b;
+        return b;
+      } else {
+        return (org.jetbrains.kotlin.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int ISRECEIVERREFERENCE_FIELD_NUMBER = 10;
+    private int isReceiverReference_;
+    /**
+     * <code>optional int32 isReceiverReference = 10;</code>
+     *
+     * <pre>
+     * non-empty =&gt; this expression is receiverOf(arguments[value_parameter_reference]
+     * </pre>
+     */
+    public boolean hasIsReceiverReference() {
+      return ((bitField0_ & 0x00000080) == 0x00000080);
+    }
+    /**
+     * <code>optional int32 isReceiverReference = 10;</code>
+     *
+     * <pre>
+     * non-empty =&gt; this expression is receiverOf(arguments[value_parameter_reference]
+     * </pre>
+     */
+    public int getIsReceiverReference() {
+      return isReceiverReference_;
+    }
+
     private void initFields() {
       flags_ = 0;
       valueParameterReference_ = 0;
@@ -25379,6 +25743,9 @@ public final class ProtoBuf {
       isInstanceTypeId_ = 0;
       andArgument_ = java.util.Collections.emptyList();
       orArgument_ = java.util.Collections.emptyList();
+      functionReference_ = "";
+      functionOwnerClassName_ = "";
+      isReceiverReference_ = 0;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -25432,6 +25799,15 @@ public final class ProtoBuf {
       for (int i = 0; i < orArgument_.size(); i++) {
         output.writeMessage(7, orArgument_.get(i));
       }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        output.writeBytes(8, getFunctionReferenceBytes());
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        output.writeBytes(9, getFunctionOwnerClassNameBytes());
+      }
+      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+        output.writeInt32(10, isReceiverReference_);
+      }
       output.writeRawBytes(unknownFields);
     }
 
@@ -25468,6 +25844,18 @@ public final class ProtoBuf {
       for (int i = 0; i < orArgument_.size(); i++) {
         size += org.jetbrains.kotlin.protobuf.CodedOutputStream
           .computeMessageSize(7, orArgument_.get(i));
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        size += org.jetbrains.kotlin.protobuf.CodedOutputStream
+          .computeBytesSize(8, getFunctionReferenceBytes());
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        size += org.jetbrains.kotlin.protobuf.CodedOutputStream
+          .computeBytesSize(9, getFunctionOwnerClassNameBytes());
+      }
+      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+        size += org.jetbrains.kotlin.protobuf.CodedOutputStream
+          .computeInt32Size(10, isReceiverReference_);
       }
       size += unknownFields.size();
       memoizedSerializedSize = size;
@@ -25582,6 +25970,12 @@ public final class ProtoBuf {
         bitField0_ = (bitField0_ & ~0x00000020);
         orArgument_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000040);
+        functionReference_ = "";
+        bitField0_ = (bitField0_ & ~0x00000080);
+        functionOwnerClassName_ = "";
+        bitField0_ = (bitField0_ & ~0x00000100);
+        isReceiverReference_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000200);
         return this;
       }
 
@@ -25635,6 +26029,18 @@ public final class ProtoBuf {
           bitField0_ = (bitField0_ & ~0x00000040);
         }
         result.orArgument_ = orArgument_;
+        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
+          to_bitField0_ |= 0x00000020;
+        }
+        result.functionReference_ = functionReference_;
+        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
+          to_bitField0_ |= 0x00000040;
+        }
+        result.functionOwnerClassName_ = functionOwnerClassName_;
+        if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
+          to_bitField0_ |= 0x00000080;
+        }
+        result.isReceiverReference_ = isReceiverReference_;
         result.bitField0_ = to_bitField0_;
         return result;
       }
@@ -25675,6 +26081,19 @@ public final class ProtoBuf {
             orArgument_.addAll(other.orArgument_);
           }
           
+        }
+        if (other.hasFunctionReference()) {
+          bitField0_ |= 0x00000080;
+          functionReference_ = other.functionReference_;
+          
+        }
+        if (other.hasFunctionOwnerClassName()) {
+          bitField0_ |= 0x00000100;
+          functionOwnerClassName_ = other.functionOwnerClassName_;
+          
+        }
+        if (other.hasIsReceiverReference()) {
+          setIsReceiverReference(other.getIsReceiverReference());
         }
         setUnknownFields(
             getUnknownFields().concat(other.unknownFields));
@@ -25781,6 +26200,7 @@ public final class ProtoBuf {
        * <pre>
        * stored as index in valueParameters list of owner-function in 1-indexation
        * Index '0' is reserved for extension receiver
+       * Index '-1' is reserved for dispatch receiver
        * </pre>
        */
       public boolean hasValueParameterReference() {
@@ -25792,6 +26212,7 @@ public final class ProtoBuf {
        * <pre>
        * stored as index in valueParameters list of owner-function in 1-indexation
        * Index '0' is reserved for extension receiver
+       * Index '-1' is reserved for dispatch receiver
        * </pre>
        */
       public int getValueParameterReference() {
@@ -25803,6 +26224,7 @@ public final class ProtoBuf {
        * <pre>
        * stored as index in valueParameters list of owner-function in 1-indexation
        * Index '0' is reserved for extension receiver
+       * Index '-1' is reserved for dispatch receiver
        * </pre>
        */
       public Builder setValueParameterReference(int value) {
@@ -25817,6 +26239,7 @@ public final class ProtoBuf {
        * <pre>
        * stored as index in valueParameters list of owner-function in 1-indexation
        * Index '0' is reserved for extension receiver
+       * Index '-1' is reserved for dispatch receiver
        * </pre>
        */
       public Builder clearValueParameterReference() {
@@ -26374,6 +26797,272 @@ public final class ProtoBuf {
         ensureOrArgumentIsMutable();
         orArgument_.remove(index);
 
+        return this;
+      }
+
+      private java.lang.Object functionReference_ = "";
+      /**
+       * <code>optional string functionReference = 8;</code>
+       *
+       * <pre>
+       * non-empty =&gt; this expression is reference to function
+       *  field contains name of function
+       * </pre>
+       */
+      public boolean hasFunctionReference() {
+        return ((bitField0_ & 0x00000080) == 0x00000080);
+      }
+      /**
+       * <code>optional string functionReference = 8;</code>
+       *
+       * <pre>
+       * non-empty =&gt; this expression is reference to function
+       *  field contains name of function
+       * </pre>
+       */
+      public java.lang.String getFunctionReference() {
+        java.lang.Object ref = functionReference_;
+        if (!(ref instanceof java.lang.String)) {
+          org.jetbrains.kotlin.protobuf.ByteString bs =
+              (org.jetbrains.kotlin.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            functionReference_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string functionReference = 8;</code>
+       *
+       * <pre>
+       * non-empty =&gt; this expression is reference to function
+       *  field contains name of function
+       * </pre>
+       */
+      public org.jetbrains.kotlin.protobuf.ByteString
+          getFunctionReferenceBytes() {
+        java.lang.Object ref = functionReference_;
+        if (ref instanceof String) {
+          org.jetbrains.kotlin.protobuf.ByteString b = 
+              org.jetbrains.kotlin.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          functionReference_ = b;
+          return b;
+        } else {
+          return (org.jetbrains.kotlin.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string functionReference = 8;</code>
+       *
+       * <pre>
+       * non-empty =&gt; this expression is reference to function
+       *  field contains name of function
+       * </pre>
+       */
+      public Builder setFunctionReference(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000080;
+        functionReference_ = value;
+        
+        return this;
+      }
+      /**
+       * <code>optional string functionReference = 8;</code>
+       *
+       * <pre>
+       * non-empty =&gt; this expression is reference to function
+       *  field contains name of function
+       * </pre>
+       */
+      public Builder clearFunctionReference() {
+        bitField0_ = (bitField0_ & ~0x00000080);
+        functionReference_ = getDefaultInstance().getFunctionReference();
+        
+        return this;
+      }
+      /**
+       * <code>optional string functionReference = 8;</code>
+       *
+       * <pre>
+       * non-empty =&gt; this expression is reference to function
+       *  field contains name of function
+       * </pre>
+       */
+      public Builder setFunctionReferenceBytes(
+          org.jetbrains.kotlin.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000080;
+        functionReference_ = value;
+        
+        return this;
+      }
+
+      private java.lang.Object functionOwnerClassName_ = "";
+      /**
+       * <code>optional string functionOwnerClassName = 9;</code>
+       *
+       * <pre>
+       * can be non empty only if [functionReference] non-empty
+       *  contains full qualified name of class containing function
+       *  empty, if function is top-level
+       * </pre>
+       */
+      public boolean hasFunctionOwnerClassName() {
+        return ((bitField0_ & 0x00000100) == 0x00000100);
+      }
+      /**
+       * <code>optional string functionOwnerClassName = 9;</code>
+       *
+       * <pre>
+       * can be non empty only if [functionReference] non-empty
+       *  contains full qualified name of class containing function
+       *  empty, if function is top-level
+       * </pre>
+       */
+      public java.lang.String getFunctionOwnerClassName() {
+        java.lang.Object ref = functionOwnerClassName_;
+        if (!(ref instanceof java.lang.String)) {
+          org.jetbrains.kotlin.protobuf.ByteString bs =
+              (org.jetbrains.kotlin.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            functionOwnerClassName_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string functionOwnerClassName = 9;</code>
+       *
+       * <pre>
+       * can be non empty only if [functionReference] non-empty
+       *  contains full qualified name of class containing function
+       *  empty, if function is top-level
+       * </pre>
+       */
+      public org.jetbrains.kotlin.protobuf.ByteString
+          getFunctionOwnerClassNameBytes() {
+        java.lang.Object ref = functionOwnerClassName_;
+        if (ref instanceof String) {
+          org.jetbrains.kotlin.protobuf.ByteString b = 
+              org.jetbrains.kotlin.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          functionOwnerClassName_ = b;
+          return b;
+        } else {
+          return (org.jetbrains.kotlin.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string functionOwnerClassName = 9;</code>
+       *
+       * <pre>
+       * can be non empty only if [functionReference] non-empty
+       *  contains full qualified name of class containing function
+       *  empty, if function is top-level
+       * </pre>
+       */
+      public Builder setFunctionOwnerClassName(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000100;
+        functionOwnerClassName_ = value;
+        
+        return this;
+      }
+      /**
+       * <code>optional string functionOwnerClassName = 9;</code>
+       *
+       * <pre>
+       * can be non empty only if [functionReference] non-empty
+       *  contains full qualified name of class containing function
+       *  empty, if function is top-level
+       * </pre>
+       */
+      public Builder clearFunctionOwnerClassName() {
+        bitField0_ = (bitField0_ & ~0x00000100);
+        functionOwnerClassName_ = getDefaultInstance().getFunctionOwnerClassName();
+        
+        return this;
+      }
+      /**
+       * <code>optional string functionOwnerClassName = 9;</code>
+       *
+       * <pre>
+       * can be non empty only if [functionReference] non-empty
+       *  contains full qualified name of class containing function
+       *  empty, if function is top-level
+       * </pre>
+       */
+      public Builder setFunctionOwnerClassNameBytes(
+          org.jetbrains.kotlin.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000100;
+        functionOwnerClassName_ = value;
+        
+        return this;
+      }
+
+      private int isReceiverReference_ ;
+      /**
+       * <code>optional int32 isReceiverReference = 10;</code>
+       *
+       * <pre>
+       * non-empty =&gt; this expression is receiverOf(arguments[value_parameter_reference]
+       * </pre>
+       */
+      public boolean hasIsReceiverReference() {
+        return ((bitField0_ & 0x00000200) == 0x00000200);
+      }
+      /**
+       * <code>optional int32 isReceiverReference = 10;</code>
+       *
+       * <pre>
+       * non-empty =&gt; this expression is receiverOf(arguments[value_parameter_reference]
+       * </pre>
+       */
+      public int getIsReceiverReference() {
+        return isReceiverReference_;
+      }
+      /**
+       * <code>optional int32 isReceiverReference = 10;</code>
+       *
+       * <pre>
+       * non-empty =&gt; this expression is receiverOf(arguments[value_parameter_reference]
+       * </pre>
+       */
+      public Builder setIsReceiverReference(int value) {
+        bitField0_ |= 0x00000200;
+        isReceiverReference_ = value;
+        
+        return this;
+      }
+      /**
+       * <code>optional int32 isReceiverReference = 10;</code>
+       *
+       * <pre>
+       * non-empty =&gt; this expression is receiverOf(arguments[value_parameter_reference]
+       * </pre>
+       */
+      public Builder clearIsReceiverReference() {
+        bitField0_ = (bitField0_ & ~0x00000200);
+        isReceiverReference_ = 0;
+        
         return this;
       }
 
