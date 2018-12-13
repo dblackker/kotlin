@@ -40,6 +40,6 @@ class ESReceiverReference(val lambda: ESValue) : ESValue(null) {
     override fun <T> accept(visitor: ESExpressionVisitor<T>): T = visitor.visitReceiverReference(this)
 }
 
-class ESReceiver(val receiver: ReceiverValue) : ESValue(null) {
+open class ESReceiver(val receiver: ReceiverValue) : ESValue(null) {
     override fun <T> accept(visitor: ESExpressionVisitor<T>): T = visitor.visitReceiver(this)
 }

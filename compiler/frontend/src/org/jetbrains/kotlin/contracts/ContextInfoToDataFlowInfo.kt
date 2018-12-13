@@ -60,6 +60,7 @@ inline private fun <D> extractDataFlowStatements(dictionary: Map<ESValue, Set<D>
 
 private fun ESValue.toDataFlowValue(): DataFlowValue? = when (this) {
     is ESDataFlowValue -> dataFlowValue
+    is ESDataFlowReceiver -> dataFlowValue
     ESConstant.NULL -> DataFlowValue.nullValue(DefaultBuiltIns.Instance)
     is ESConstant -> DataFlowValue(IdentifierInfo.NO, type)
     else -> null

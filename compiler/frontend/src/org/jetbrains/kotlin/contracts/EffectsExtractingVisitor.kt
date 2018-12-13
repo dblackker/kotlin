@@ -18,7 +18,10 @@ package org.jetbrains.kotlin.contracts
 
 import org.jetbrains.kotlin.builtins.DefaultBuiltIns
 import org.jetbrains.kotlin.contracts.interpretation.ContractInterpretationDispatcher
-import org.jetbrains.kotlin.contracts.model.*
+import org.jetbrains.kotlin.contracts.model.Computation
+import org.jetbrains.kotlin.contracts.model.ConditionalEffect
+import org.jetbrains.kotlin.contracts.model.ESEffect
+import org.jetbrains.kotlin.contracts.model.Functor
 import org.jetbrains.kotlin.contracts.model.functors.*
 import org.jetbrains.kotlin.contracts.model.structure.*
 import org.jetbrains.kotlin.contracts.parsing.isEqualsDescriptor
@@ -152,9 +155,24 @@ class EffectsExtractingVisitor(
     }
 
     private fun ReceiverValue.toComputation(): Computation = when (this) {
-        is ExpressionReceiver -> extractOrGetCached(expression)
-        is ExtensionReceiver -> ESReceiver(this)
+        is ExpressionReceiver -> {
+            val value = extractOrGetCached(expression)
+            if (value !is ESDataFlowValue) {
+                value
+            } else {
+                ESDataFlowValueWithExpressionReceiver(this, value.descriptor, value.dataFlowValue)
+            }
+        }
+        is ExtensionReceiver -> ESDataFlowReceiver(this, createDataFlowValue())
         else -> UNKNOWN_COMPUTATION
+    }
+
+    private fun ExtensionReceiver.createDataFlowValue(): DataFlowValue {
+        return dataFlowValueFactory.createDataFlowValue(
+            receiverValue = this,
+            bindingContext = trace.bindingContext,
+            containingDeclarationOrModule = this.declarationDescriptor
+        )
     }
 
     private fun KtExpression.createDataFlowValue(): DataFlowValue? {
