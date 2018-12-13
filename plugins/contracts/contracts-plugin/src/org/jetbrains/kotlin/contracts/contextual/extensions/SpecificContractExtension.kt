@@ -7,6 +7,8 @@ package org.jetbrains.kotlin.contracts.contextual.extensions
 
 import org.jetbrains.kotlin.contracts.contextual.model.ContextFamily
 import org.jetbrains.kotlin.contracts.contextual.parsing.PsiEffectDeclarationExtractor
+import org.jetbrains.kotlin.contracts.contextual.serialization.SubpluginContractDeserializer
+import org.jetbrains.kotlin.contracts.contextual.serialization.SubpluginContractSerializer
 import org.jetbrains.kotlin.contracts.parsing.PsiContractVariableParserDispatcher
 import org.jetbrains.kotlin.extensions.ProjectExtensionDescriptor
 import org.jetbrains.kotlin.resolve.BindingContext
@@ -22,4 +24,7 @@ interface SpecificContractExtension {
     fun getFamily(): ContextFamily
 
     fun getParser(bindingContext: BindingContext, dispatcher: PsiContractVariableParserDispatcher): PsiEffectDeclarationExtractor
+
+    val subpluginContractSerializer: SubpluginContractSerializer
+    val subpluginContractDeserializer: SubpluginContractDeserializer
 }

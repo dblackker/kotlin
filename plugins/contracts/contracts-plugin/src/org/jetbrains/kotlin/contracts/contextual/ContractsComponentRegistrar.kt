@@ -17,7 +17,9 @@ import org.jdom.input.sax.SAXHandler
 import org.jetbrains.kotlin.compiler.plugin.ComponentRegistrar
 import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.contracts.contextual.extensions.SpecificContractExtension
+import org.jetbrains.kotlin.contracts.contextual.serialization.ExtensionContractSerializer
 import org.jetbrains.kotlin.extensions.ContractsExtension
+import org.jetbrains.kotlin.serialization.ContractSerializerExtension
 import org.xml.sax.XMLReader
 import java.io.File
 import java.io.InputStream
@@ -33,6 +35,7 @@ class ContractsComponentRegistrar : ComponentRegistrar {
 
     override fun registerProjectComponents(project: MockProject, configuration: CompilerConfiguration) {
         ContractsExtension.registerExtension(project, ContractsImplementationExtension())
+        ContractSerializerExtension.registerExtension(project, ExtensionContractSerializer())
 
         val jarPaths = configuration.getList(ContractsConfigurationKeys.PATHS_TO_JARS)
         val classLoader = URLClassLoader(
