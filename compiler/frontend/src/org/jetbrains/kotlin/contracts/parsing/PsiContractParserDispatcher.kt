@@ -153,7 +153,7 @@ internal class PsiContractParserDispatcher(
         val reference = expression as? KtCallableReferenceExpression ?: return null
         val descriptor =
             callContext.bindingContext[BindingContext.REFERENCE_TARGET, reference.callableReference] as? FunctionDescriptor ?: return null
-        return FunctionReference(descriptor)
+        return FunctionReferenceImpl(descriptor)
     }
 
     fun parseValue(expression: KtExpression?): ContractDescriptionValue? {
