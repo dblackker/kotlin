@@ -48,7 +48,11 @@ class CollectScriptCompilationDependenciesTest : KtUsefulTestCase() {
     }
 
     fun testImportWithDependenciesAdded() {
-        runTest("imp_leaf_with_deps.req1.kts", listOf("leaf_with_deps.req1.kts"), listOf(File("someDependency.jar")))
+        runTest(
+            "imp_leaf_with_deps.req1.kts",
+            listOf("leaf_with_deps_1.req1.kts", "leaf_with_deps_2.req1.kts"),
+            listOf(File("someDependency1.jar", "someDependency2.jar"))
+        )
     }
 
     private fun runTest(scriptFile: String, expectedDependencies: List<String>, classPath: List<File> = emptyList()) {
@@ -71,12 +75,5 @@ class CollectScriptCompilationDependenciesTest : KtUsefulTestCase() {
         val actualSources = environment.getSourceFiles().map { it.name }.sorted()
 
         TestCase.assertEquals(expectedSources, actualSources)
-
-        if (classPath.isNotEmpty()) {
-
-            val actualClasspath = environment.configuration.jvmClasspathRoots
-
-            TestCase.assertTrue("expect that $actualClasspath contains $classPath", actualClasspath.containsAll(classPath))
-        }
     }
 }

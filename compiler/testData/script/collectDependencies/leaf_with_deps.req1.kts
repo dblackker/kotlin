@@ -1,2 +1,0 @@
-
-@file:DependsOn("someDependency.jar")
