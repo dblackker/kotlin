@@ -93,7 +93,7 @@ fun <R> R.asSuccess(reports: List<ScriptDiagnostic> = listOf()): ResultWithDiagn
     ResultWithDiagnostics.Success(this, reports)
 
 /**
- * Converts the receiver Throwable to the Failure results wrapper with optional [customMessage], [script] and [location]
+ * Converts the receiver Throwable to the Failure results wrapper with optional [customMessage], [path] and [location]
  */
 fun Throwable.asDiagnostics(
     customMessage: String? = null,
@@ -103,7 +103,7 @@ fun Throwable.asDiagnostics(
     ScriptDiagnostic(customMessage ?: message ?: "$this", ScriptDiagnostic.Severity.ERROR, path, location, this)
 
 /**
- * Converts the receiver String to error diagnostic report with optional [script] and [location]
+ * Converts the receiver String to error diagnostic report with optional [path] and [location]
  */
 fun String.asErrorDiagnostics(path: String? = null, location: SourceCode.Location? = null): ScriptDiagnostic =
     ScriptDiagnostic(this, ScriptDiagnostic.Severity.ERROR, path, location)

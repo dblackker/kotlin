@@ -245,7 +245,8 @@ internal class ScriptDiagnosticsMessageCollector : MessageCollector {
         }
         if (mappedSeverity != null) {
             val mappedLocation = location?.let {
-                SourceCode.Location(SourceCode.Position(it.line, it.column))
+                if (it.line < 0 && it.column < 0) null // special location created by CompilerMessageLocation.create
+                else SourceCode.Location(SourceCode.Position(it.line, it.column))
             }
             _diagnostics.add(ScriptDiagnostic(message, mappedSeverity, location?.path, mappedLocation))
         }
