@@ -219,11 +219,6 @@ public class JsLegacyPrimitiveArraysBoxTestGenerated extends AbstractJsLegacyPri
         runTest("compiler/testData/codegen/box/arrays/kt1291.kt");
     }
 
-    @TestMetadata("kt17134.kt")
-    public void testKt17134() throws Exception {
-        runTest("compiler/testData/codegen/box/arrays/kt17134.kt");
-    }
-
     @TestMetadata("kt238.kt")
     public void testKt238() throws Exception {
         runTest("compiler/testData/codegen/box/arrays/kt238.kt");
